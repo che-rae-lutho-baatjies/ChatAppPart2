@@ -19,3 +19,4 @@ nbdist/
 #System files
 .DS_Store
 Thumbs.db
+/nbproject/
