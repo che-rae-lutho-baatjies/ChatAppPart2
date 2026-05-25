@@ -1,5 +1,9 @@
 
 import com.mycompany.chatapppart2.Login;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -98,6 +102,10 @@ public class LoginTest {
             String message = login.returnLoginStatus(false);
             assertFalse(message.contains("Failed"));
         }
+
+    private void assertEquals(String user_registered_successfully, String result) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }    
 
     
