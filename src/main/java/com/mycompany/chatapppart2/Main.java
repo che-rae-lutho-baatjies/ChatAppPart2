@@ -180,7 +180,9 @@ public class Main {
                     System.out.println("Invalid option. Please try again.");
                     break;
             }   
-    
+        }       
+    }
+}
 
     
 
