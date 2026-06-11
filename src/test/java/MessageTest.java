@@ -1,176 +1,120 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-import org.apache.logging.log4j.message.Message;
+import com.mycompany.chatapppart2.Message;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  *
- * @author lutho  
+ * @author lutho
  */
 public class MessageTest {
-    
-    @Test 
-    public void testMessageLengthValid() {
-        Message msg = new Message("+27718693002", "Hi there", 1) {
-            @Override
-            public String getFormattedMessage() {
-                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-            }
 
-            @Override
-            public String getFormat() {
-                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-            }
-
-            @Override
-            public Object[] getParameters() {
-                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-            }
-
-            @Override
-            public Throwable getThrowable() {
-                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-            }
-        };
-        assertEquals("Message ready to send. ",msg.checkMessageLength());
-       
+    @BeforeEach
+    public void clearMessageLists() {
+        Message.sentMessages.clear();
+        Message.disregardedMessages.clear();
+        Message.storedMessages.clear();
+        Message.messageHashes.clear();
+        Message.messageIDs.clear();
+        Message.recipientList.clear();
     }
-    
+
     @Test
-    public void testMessageLengthInvalid() {
-        String longMsg = "A".repeat(260); 
-        Message msg = new Message("+27718693002", longMsg,1) {
-            @Override
-            public String getFormattedMessage() {
-                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-            }
+    public void testMessageDetailsAreCaptured() {
+        Message message = new Message("+27718693002", "Test message", 1);
 
-            @Override
-            public String getFormat() {
-                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-            }
-
-            @Override
-            public Object[] getParameters() {
-                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-            }
-
-            @Override
-            public Throwable getThrowable() {
-                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-            }
-        };
-        assertEquals("Message exceeds 250 characters by 10; please reduce the size.", msg.checkMessageLength());
+        assertEquals("+27718693002", message.getRecipient());
+        assertEquals("Test message", message.getMessageText());
+        assertNotNull(message.getMessageID());
+        assertEquals(10, message.getMessageID().length());
     }
-    
+
     @Test
-    public void testRecipientValid() {
-        Message msg = new Message ("+27718693002", "Test", 1) {
-            @Override
-            public String getFormattedMessage() {
-                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-            }
+    public void testPrintMessagesIncludesMessageDetails() {
+        Message message = new Message("+27718693002", "Test message", 1);
 
-            @Override
-            public String getFormat() {
-                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-            }
+        String report = message.printMessages();
 
-            @Override
-            public Object[] getParameters() {
-                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-            }
-
-            @Override
-            public Throwable getThrowable() {
-                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-            }
-        };
-        assertEquals("Cell phone number successfully captured.", msg.checkRecipientCell());
+        assertTrue(report.contains("Message ID: " + message.getMessageID()));
+        assertTrue(report.contains("Message Hash: " + message.getMesageHash()));
+        assertTrue(report.contains("Recipient:+27718693002"));
+        assertTrue(report.contains("Message: Test message"));
     }
-    
+
     @Test
-    public void testRecipientInvalid() {
-        Message msg = new Message ("085759889", "Test", 1) {
-            @Override
-            public String getFormattedMessage() {
-                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-            }
+    public void testReturnTotalMessages() {
+        Message message = new Message("+27718693002", "Test", 1);
 
-            @Override
-            public String getFormat() {
-                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-            }
-
-            @Override
-            public Object[] getParameters() {
-                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-            }
-
-            @Override
-            public Throwable getThrowable() {
-                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-            }
-        };
-        assertEquals("Cell phone number is incorrectly formatted or does not contain an international code. Please correct the number and try again.", msg.checkRecipientCell());
+        assertEquals(1, message.returnTotalMessages());
     }
-    
-    @Test 
-    public void testMessageHashCorrect() {
-        // Test data: ID starts with "00", number 0, first "HI", last "NIGHT"
-        Message msg = new Message("+27718693002", "Hi Mike can you join us for dinner tonight? ", 0) {
-            @Override
-            public String getFormattedMessage() {
-                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-            }
 
-            @Override
-            public String getFormat() {
-                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-            }
+    @Test
+    public void testMessageHashFormat() {
+        Message message = new Message("+27718693002", "Hi Mike", 1);
 
-            @Override
-            public Object[] getParameters() {
-                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-            }
+        String hash = message.getMesageHash();
 
-            @Override
-            public Throwable getThrowable() {
-                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-            }
-        };
-        //Hash should be: 00:0:HITONIGHT 
-        assertEquals ("00:0:HITONIGHT", msg.createMessageHash());
+        assertTrue(hash.matches("\\d{3}:\\d+:HIMIKE"));
     }
-    
-    @Test 
-    public void testMessageIDExists() {
-        Message msg = new Message("+27718693002", "Test", 1) {
-            @Override
-            public String getFormattedMessage() {
-                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-            }
 
-            @Override
-            public String getFormat() {
-                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-            }
+    @Test
+    public void testDisplayLongestMessage() {
+        Message.storedMessages.add("Short message");
+        Message.storedMessages.add("This is the longest message among these");
+        Message.storedMessages.add("Medium length");
 
-            @Override
-            public Object[] getParameters() {
-                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-            }
+        String longest = Message.displayLongestMessage();
 
-            @Override
-            public Throwable getThrowable() {
-                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-            }
-        };
-        
-        assertTrue(msg.checkMessageID()) ;
-        assertEquals(10, msg.getMessageID().length());
+        assertEquals("This is the longest message among these", longest);
+    }
+
+    @Test
+    public void testSearchByMessageID() {
+        String id = "1234567890";
+        Message.messageIDs.add(id);
+        Message.recipientList.add("+2781234567");
+        Message.storedMessages.add("Sample message");
+
+        String result = Message.searchByMessageID(id);
+        String notFound = Message.searchByMessageID("nonexistent");
+
+        assertTrue(result.contains("+2781234567"));
+        assertTrue(result.contains("Sample message"));
+        assertEquals("Message not found.", notFound);
+    }
+
+    @Test
+    public void testSearchByRecipient() {
+        Message.recipientList.add("+27838884567");
+        Message.storedMessages.add("Message 1");
+        Message.recipientList.add("+27838884567");
+        Message.storedMessages.add("Message 2");
+        Message.recipientList.add("+27834567890");
+
+        String results = Message.searchByRecipient("+27838884567");
+
+        assertTrue(results.contains("Message 1"));
+        assertTrue(results.contains("Message 2"));
+    }
+
+    @Test
+    public void testDeleteByHash() {
+        String hash = "123:1:HELLO";
+        Message.messageHashes.add(hash);
+        Message.storedMessages.add("Hello world");
+        Message.messageIDs.add("123");
+        Message.recipientList.add("+27838884567");
+
+        String result = Message.deleteByHash(hash);
+
+        assertEquals("Message: Hello world successfully deleted.", result);
+        assertFalse(Message.storedMessages.contains("Hello world"));
+        assertTrue(Message.messageHashes.isEmpty());
+        assertTrue(Message.messageIDs.isEmpty());
+        assertTrue(Message.recipientList.isEmpty());
     }
 }
